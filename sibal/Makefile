@@ -29,7 +29,7 @@ fclean:
 #	@docker volume prune -a
 #	@docker image prune -a
 	docker system prune --volumes -a
-	sudo rm -rf ~/data/
+	rm -rf /home/naki/data/
 
 re:
 	make fclean

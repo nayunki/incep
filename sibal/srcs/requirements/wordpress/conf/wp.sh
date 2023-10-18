@@ -5,10 +5,10 @@ if [ ! -f "/var/www/html/index.php" ]; then
   wp core download
   wp config create --dbhost=mariadb:3306 --dbname=${MYSQL_DB_NAME} --dbuser=${MYSQL_USER} --dbpass=${MYSQL_PWD}
 # 워드프레스 설정파일인 wp-config.php 생성, 마리아디비 포트 3306 연결 및 데이터베이스 설정
-  wp core install --url=$WP_URL --title=$WP_TITLE --admin_user=$WP_ADMIN_NAME --admin_password=$WP_ADMIN_PWD \
-                --admin_email=$WP_ADMIN_MAIL --skip-email
+  wp core install --url=${WP_URL} --title=${WP_TITLE} --admin_user=${WP_ADMIN_NAME} --admin_password=${WP_ADMIN_PWD} \
+                --admin_email=${WP_ADMIN_MAIL} --skip-email
 # 워드프레스 설치 및 초기 설정
-  wp user create $WP_USER_NAME $WP_USER_MAIL --user_pass=$WP_USER_PWD
+  wp user create ${WP_USER_NAME} ${WP_USER_MAIL} --user_pass=${WP_USER_PWD}
 # 워드프레스에 새로운 유저 생성
 fi
 
