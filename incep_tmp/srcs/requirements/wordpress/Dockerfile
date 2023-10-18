@@ -55,9 +55,9 @@ RUN sed -i 's/;chdir = \/var\/www/chdir = \/var\/www\/html/g' /etc/php81/php-fpm
 # 웹 서버나 다른 시스템에서 PHP-FPM과 연결 가능해짐
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/g' /etc/php81/php-fpm.d/www.conf
 
-COPY ./conf/wordpress.sh /tmp/wordpress.sh
-RUN chmod +x /tmp/wordpress.sh
+COPY ./conf/wp-config.sh /tmp/wp-config.sh
+RUN chmod +x /tmp/wp-config.sh
 EXPOSE 9000
 ENTRYPOINT ["/sbin/tini", "--"]
 # forground shell session not deamon
-CMD ["sh", "/tmp/wordpress.sh"]
+CMD ["sh", "/tmp/wp-config.sh"]

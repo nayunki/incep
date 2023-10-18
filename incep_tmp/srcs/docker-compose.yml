@@ -41,13 +41,13 @@ volumes:
   db-volume:
     driver: local
     driver_opts:
-      device: /home/naki/data/db-data
+      device: /home/data/db-data
       type: none
       o: bind
   wp-volume:
     driver: local
     driver_opts:
-      device: /home/naki/data/wp-data
+      device: /home/data/wp-data
       type: none
       o: bind
 

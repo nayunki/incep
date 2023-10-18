@@ -41,13 +41,13 @@ volumes:
   db-volume:
     driver: local
     driver_opts:
-      device: /home/naki/data/mariadb
+      device: /home/data/mariadb
       type: none
       o: bind
   wp-volume:
     driver: local
     driver_opts:
-      device: /home/naki/data/wordpress
+      device: /home/data/wordpress
       type: none
       o: bind
 
