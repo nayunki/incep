@@ -1,9 +1,7 @@
 FROM alpine:3.18.3
 
 RUN apk update && apk upgrade
-RUN apk add --no-cache nginx \
-          openssl \
-          tini
+RUN apk add --no-cache nginx openssl tini
 
 COPY ./conf/nginx.conf /etc/nginx/http.d
 # 호스트 파일을 컨테이너 내부로 복사

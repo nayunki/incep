@@ -1,49 +1,47 @@
 FROM alpine:3.18.3
 
 RUN apk update && apk upgrade
-RUN apk add --no-cache tini
-# pid 1. 걍 노캐쉬 옵션을 빼보자
 
-RUN apk add php81         \
+RUN apk add --no-cache php81 \
 # PHP 프로그래밍 언어
     php81-fpm             \
 # FPM (FastCGI Process Manager) - PHP 실행 환경
     php81-mysqli         \
-# MySQLi 확장 - MySQL 데이터베이스에 연결하기 위한 확장
+# MySQL 데이터베이스에 연결하기 위한 확장
     php81-json            \
-# JSON 확장 - JSON 데이터 처리를 위한 확장
+# JSON 데이터 처리를 위한 확장
     php81-curl            \
-# cURL 확장 - 웹 요청 및 데이터 전송을 위한 확장
+# 웹 요청 및 데이터 전송을 위한 확장
     php81-dom              \
-# DOM 확장 - XML 및 HTML 문서 처리를 위한 확장
+# XML 및 HTML 문서 처리를 위한 확장
     php81-exif             \
-# EXIF 확장 - 이미지 EXIF 데이터 처리를 위한 확장
+# 이미지 EXIF 데이터 처리를 위한 확장
     php81-fileinfo        \
-# FileInfo 확장 - 파일 형식 식별을 위한 확장
+# 파일 형식 식별을 위한 확장
     php81-mbstring       \
-# MBString 확장 - 다국어 문자열 처리를 위한 확장
+# 다국어 문자열 처리를 위한 확장
     php81-openssl         \
-# OpenSSL 확장 - 암호화 및 보안 기능을 위한 확장
+# 암호화 및 보안 기능을 위한 확장
     php81-xml             \
 # XML 확장 - XML 데이터 처리를 위한 확장
     php81-zip              \
-# Zip 확장 - ZIP 파일 처리를 위한 확장
+# ZIP 파일 처리를 위한 확장
     php81-phar            \
-# Phar 확장 - PHP 아카이브 파일(.phar)을 실행하기 위한 확장
+# PHP 아카이브 파일(.phar)을 실행하기 위한 확장
     php81-iconv           \
-# Iconv 확장 - 문자 인코딩 변환을 위한 확장
+# 문자 인코딩 변환을 위한 확장
     mariadb-client        \
-# MariaDB 클라이언트 - MariaDB 데이터베이스에 접속하기 위한 클라이언트
-    curl
-# cURL - URL을 통해 데이터를 전송하기 위한 명령 줄 도구
+# MariaDB 데이터베이스에 접속하기 위한 클라이언트
+    curl				  \
+# URL을 통해 데이터를 전송하기 위한 명령 줄 도구
+	tini
+# init system
 
 # 명령어로 wordpress를 관리할 수 있는 도구인 wp-cli 설치
 WORKDIR /tmp
-
 RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin
 RUN chmod +x /usr/local/bin/wp-cli.phar
-# 실행 권한 부여
 RUN ln -sf /usr/local/bin/wp-cli.phar /usr/local/bin/wp
 # 심볼릭링크 설정 (alias 같은 역할)
 
@@ -63,7 +61,4 @@ COPY ./conf/wp.sh /tmp/wp.sh
 RUN chmod +x /tmp/wp.sh
 EXPOSE 9000
 ENTRYPOINT ["/sbin/tini", "--"]
-# pid 1 = tini
 CMD ["sh", "/tmp/wp.sh"]
-# CMD는 추가 인자만을 전달하므로, 최종 시행되는 명령 : /sbin/tini --sh /tmp/wp.sh
-# 하지만 . . ENTRYPOINT ["/sbin/tini", "--", "/tmp/wp.sh"]도 해보자 히히 .. 

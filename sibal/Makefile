@@ -2,8 +2,8 @@ NAME = Inception
 DOCKER_COMPOSE_PATH = ./srcs/docker-compose.yml
 
 all:
-	mkdir -p ~/data/db-data
-	mkdir -p ~/data/wp-data
+	mkdir -p /home/naki/data/db-data
+	mkdir -p /home/naki/data/wp-data
 	docker-compose -f ${DOCKER_COMPOSE_PATH} build
 # 도커파일로 이미지를 빌드
 	make up
@@ -24,12 +24,7 @@ fclean:
 	make clean
 	docker-compose -f ${DOCKER_COMPOSE_PATH} down --volumes
 # 컨테이너와 함께 볼륨 제거
-#	@docker system prune --volumes
-#	@docker network prune
-#	@docker volume prune -a
-#	@docker image prune -a
-	docker system prune --volumes -a
-	rm -rf /home/naki/data/
+	rm -rf /home/naki/data
 
 re:
 	make fclean

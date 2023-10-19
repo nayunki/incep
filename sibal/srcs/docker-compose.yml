@@ -50,7 +50,7 @@ volumes:
     driver: local
 # 사용할 볼륨 드라이버 종류 지정 ex. nfs는 원격 네트워크 볼륨
     driver_opts:
-      device: ~/data/db-data
+      device: /home/naki/data/db-data
 # 로컬 볼륨이 호스트 시스템에서 사용할 경로 명시
       type: none
 # 볼륨 유형. 로컬은 따로 없다.
@@ -59,7 +59,7 @@ volumes:
   wp-volume:
     driver: local
     driver_opts:
-      device: ~/data/wp-data
+      device: /home/naki/data/wp-data
       type: none
       o: bind
 

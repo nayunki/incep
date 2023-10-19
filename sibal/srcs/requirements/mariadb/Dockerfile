@@ -1,39 +1,28 @@
 FROM alpine:3.18.3
 
-#for mysql socket file
-#MariaDB가 소켓 파일을 저장하는 위치
 RUN mkdir -p /run/mysqld
-#data 저장 폴더
+# MariaDB가 소켓 파일을 저장하는 위치
 RUN mkdir -p /var/lib/mysql
-RUN apk update && apk upgrade && apk add --no-cache mariadb mariadb-client
-RUN apk add --no-cache tini
+# data 저장 폴더
+RUN apk update && apk upgrade
+RUN apk add --no-cache mariadb mariadb-client tini
 
 COPY ./conf/create_db.sh /tmp/create_db.sh
+# 컨테이너 내부 경로로 복사
 RUN chown -R mysql:mysql /run/mysqld
 
-RUN chmod 777 /var/run/mysqld; \
-    { echo '[mysqld]'; \
-     #호스트 캐시 기능을 비활성화
-      echo 'skip-host-cache'; \
-     #DNS 역방향 조회를 비활성화 : 성능, 보안, DNS 관리 작업 효율화가 목적
-      echo 'skip-name-resolve';  \
-       # all ip connection allow -> 연결을 위해
-      echo 'bind-address=0.0.0.0';  \
-    } | tee  /etc/my.cnf.d/docker.cnf;
+RUN  sed -i "s/skip-networking/skip-networking=0/g" /etc/my.cnf.d/mariadb-server.cnf
+# MariaDB 서버 설정 파일 수정, 네트워크 연결 가능
+RUN sed -i "s/.*bind-address\s*=.*/bind-address=0.0.0.0/g" /etc/my.cnf.d/mariadb-server.cnf
+# bind-address 옵션 수정, 모든 IP 주소로부터의 연결 수락
 
-
-#maria db can connect with network
-RUN  sed -i "s|skip-networking|skip-networking=0|g" /etc/my.cnf.d/mariadb-server.cnf
-#mariadb directory init
-# user : mysql , datadir : /var/lib/mysql ,
-#MariaDB와 관련된 데몬과 클라이언트를 설치하면, 시스템 상에 필요한 내용들을 자동으로 만들어주는 식의 일련의 과정을 수행하는 mysql-install-db 활용
+# MySQL 데이터베이스 초기화. 사용자를 mysql로 지정하고 MySQL의 설치 및 데이터 디렉토리 경로를 지정
 RUN mysql_install_db --user=mysql \
-								--basedir=/usr \
-								--datadir=/var/lib/mysql \
-								--skip-test-db
-EXPOSE 3306
+					--basedir=/usr \
+					--datadir=/var/lib/mysql \
+					--skip-test-db
 
 RUN chmod +x /tmp/create_db.sh
+EXPOSE 3306
 ENTRYPOINT ["/sbin/tini", "--"]
-
 CMD ["sh", "/tmp/create_db.sh"]
